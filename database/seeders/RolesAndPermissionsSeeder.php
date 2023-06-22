@@ -82,7 +82,7 @@ class RolesAndPermissionsSeeder extends Seeder
     ]);
 
 
-        $deliveryStaffRole = Role::create(['name' => 'admin'])->syncPermissions([
+        $deliveryStaffRole = Role::create(['name' => 'AssayLab Delivery Staff'])->syncPermissions([
             $staffPermissionRead,
             $rolePermissionRead,
             $permissionRead,
