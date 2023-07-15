@@ -21,7 +21,6 @@ return new class extends Migration
             $table->foreignIdFor(Department::class);
             $table->foreignIdFor(User::class)->comment('AssayLab Staff who received lab request');
             // $table->integer('number_samples');
-            $table->string('request_date');
             $table->timestamps();
             $table->softDeletes();
         });

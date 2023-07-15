@@ -64,14 +64,17 @@ class DepartmentResource extends Resource
                     ->sortable()
                     ->searchable()
                     ->label('Department Name'),
-                Tables\Columns\TextColumn::make('slug')
+                Tables\Columns\TextColumn::make('department_slug')
                     ->sortable()
                     ->searchable()
-                    ->label('Department Name'),
+                    ->label('Department Initials'),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime('D j M Y, G:i:s'),
-                // Tables\Columns\TextColumn::make('updated_at')
-                //     ->dateTime('D j M Y, G:i:s'),
+                Tables\Columns\TextColumn::make('updated_at')
+                    ->dateTime('D j M Y, G:i:s'),
+                Tables\Columns\TextColumn::make('deleted_at')
+                    ->toggleable()
+                    ->dateTime('D j M Y, G:i:s'),
             ])
             ->filters([
                 TrashedFilter::make(),

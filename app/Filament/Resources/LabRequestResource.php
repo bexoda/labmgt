@@ -17,6 +17,7 @@ use Filament\Tables\Filters\TrashedFilter;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use App\Filament\Resources\LabRequestResource\Pages;
 use App\Filament\Resources\LabRequestResource\RelationManagers;
+use App\Filament\Resources\LabRequestResource\RelationManagers\LabResultsRelationManager;
 use App\Filament\Resources\LabRequestResource\RelationManagers\LabSamplesRelationManager;
 
 class LabRequestResource extends Resource
@@ -216,18 +217,19 @@ class LabRequestResource extends Resource
                     ->searchable(),
                 Tables\Columns\TextColumn::make('created_at')
                     ->label('Request Date')
-                    ->dateTime(),
+                    ->dateTime('D jS M Y, G:i:s'),
                 Tables\Columns\TextColumn::make('updated_at')
-                    ->dateTime(),
+                    ->dateTime('D jS M Y, G:i:s'),
                 Tables\Columns\TextColumn::make('deleted_at')
                     ->toggleable()
-                    ->dateTime(),
+                    ->dateTime('D jS M Y, G:i:s'),
             ])
             ->filters([
                 TrashedFilter::make(),
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
+                Tables\Actions\DeleteAction::make()
             ])
             ->bulkActions([
                 Tables\Actions\DeleteBulkAction::make(),
@@ -238,6 +240,7 @@ class LabRequestResource extends Resource
     {
         return [
             LabSamplesRelationManager::class,
+            LabResultsRelationManager::class,
         ];
     }
 
