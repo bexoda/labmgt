@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
@@ -17,7 +18,6 @@ class LabRequest extends Model
         'delivered_by',
         'department_id',
         'user_id',
-        'request_date',
     ];
 
     /**
@@ -61,4 +61,15 @@ class LabRequest extends Model
     {
         return $this->belongsToMany(LabSample::class, 'lab_request_lab_sample', 'lab_request_id', 'lab_sample_id');
     }
+
+    /**
+     * Get all of the labResults for the LabRequest
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function labResults(): HasMany
+    {
+        return $this->hasMany(LabResult::class);
+    }
+
 }

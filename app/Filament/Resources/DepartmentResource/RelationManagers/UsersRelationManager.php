@@ -11,6 +11,7 @@ use Filament\Resources\Form;
 use Filament\Resources\Table;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Database\Eloquent\Builder;
+use Filament\Tables\Filters\TrashedFilter;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Filament\Resources\RelationManagers\RelationManager;
 
@@ -101,15 +102,20 @@ class UsersRelationManager extends RelationManager
                     ->label('Roles'),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime('D jS M Y, G:i:s')
-                    ->toggleable()
-                    ->label('Joined'),
-
+                    ->toggleable(),
+                Tables\Columns\TextColumn::make('updated_at')
+                    ->dateTime('D jS M Y, G:i:s')
+                    ->toggleable(),
+                Tables\Columns\TextColumn::make('deleted_at')
+                    ->dateTime('D jS M Y, G:i:s')
+                    ->toggleable(),
             ])
             ->filters([
-                //
+                TrashedFilter::make(),
             ])
             ->headerActions([
-                Tables\Actions\CreateAction::make(),
+                Tables\Actions\CreateAction::make()
+                ->label('New User'),
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),

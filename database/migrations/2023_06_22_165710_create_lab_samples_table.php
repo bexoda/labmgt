@@ -15,8 +15,9 @@ return new class extends Migration
     {
         Schema::create('lab_samples', function (Blueprint $table) {
             $table->id();
-            $table->string('label');
+            $table->string('name');
             $table->timestamps();
+            $table->softDeletes();
         });
 
         Schema::create('lab_request_lab_sample', function (Blueprint $table) {
@@ -24,6 +25,7 @@ return new class extends Migration
             $table->foreignIdFor(LabRequest::class);
             $table->foreignIdFor(LabSample::class);
             $table->timestamps();
+            $table->softDeletes();
         });
 
     }

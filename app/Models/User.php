@@ -11,11 +11,12 @@ use Filament\Models\Contracts\FilamentUser;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 
 class User extends Authenticatable implements FilamentUser
 {
-    use HasApiTokens, HasFactory, Notifiable, HasRoles, Impersonate;
+    use HasApiTokens, HasFactory, Notifiable, HasRoles, SoftDeletes, Impersonate;
 
     /**
      * The attributes that are mass assignable.
@@ -77,5 +78,15 @@ class User extends Authenticatable implements FilamentUser
     public function labRequests(): HasMany
     {
         return $this->hasMany(LabRequest::class);
+    }
+
+    /**
+     * Get all of the labResults for the User
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function labResults(): HasMany
+    {
+        return $this->hasMany(LabResult::class);
     }
 }

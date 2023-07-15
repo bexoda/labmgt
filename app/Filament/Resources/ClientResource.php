@@ -63,12 +63,17 @@ class ClientResource extends Resource
                 Tables\Columns\TextColumn::make('email')
                     ->sortable()
                     ->searchable(),
-                Tables\Columns\TextColumn::make('gender.gender')
+                Tables\Columns\BadgeColumn::make('gender.gender')
+                ->colors([
+                    'primary' => 'Male',
+                    'success' => 'Female',
+                ])
                     ->sortable()
                     ->searchable(),
                 Tables\Columns\TextColumn::make('date_of_birth')
                     ->sortable()
-                    ->searchable(),
+                    ->searchable()
+                    ->dateTime('D jS M Y'),
                 Tables\Columns\TextColumn::make('phone_number')
                     ->sortable()
                     ->searchable(),
@@ -78,13 +83,13 @@ class ClientResource extends Resource
                 Tables\Columns\TextColumn::make('created_at')
                     ->sortable()
                     ->searchable()
-                    ->dateTime(),
+                    ->dateTime('D jS M Y, G:i:s'),
                 Tables\Columns\TextColumn::make('updated_at')
                     ->toggleable()
-                    ->dateTime(),
+                    ->dateTime('D jS M Y, G:i:s'),
                 Tables\Columns\TextColumn::make('deleted_at')
                     ->toggleable()
-                    ->dateTime(),
+                    ->dateTime('D jS M Y, G:i:s'),
             ])
             ->filters([
                 TrashedFilter::make(),
