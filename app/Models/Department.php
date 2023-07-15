@@ -13,7 +13,7 @@ class Department extends Model
 
     protected $fillable = [
         'name',
-        'slug',
+        'department_slug',
     ];
 
     /**
@@ -26,7 +26,7 @@ class Department extends Model
         return $this->hasMany(User::class,);
     }
 
-    
+
     /**
      * Get all of the labRequests for the Department
      *
