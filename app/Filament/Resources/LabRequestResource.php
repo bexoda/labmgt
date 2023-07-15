@@ -2,16 +2,21 @@
 
 namespace App\Filament\Resources;
 
+use Closure;
+use Filament\Forms;
+use Filament\Tables;
+use App\Models\LabRequest;
+use Illuminate\Support\Str;
+use Filament\Resources\Form;
+use Filament\Resources\Table;
+use Filament\Resources\Resource;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Database\Eloquent\Builder;
+use Filament\Tables\Filters\TrashedFilter;
+use Illuminate\Database\Eloquent\SoftDeletingScope;
 use App\Filament\Resources\LabRequestResource\Pages;
 use App\Filament\Resources\LabRequestResource\RelationManagers;
-use App\Models\LabRequest;
-use Filament\Forms;
-use Filament\Resources\Form;
-use Filament\Resources\Resource;
-use Filament\Resources\Table;
-use Filament\Tables;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
+use App\Filament\Resources\LabRequestResource\RelationManagers\LabSamplesRelationManager;
 
 class LabRequestResource extends Resource
 {
@@ -26,67 +31,155 @@ class LabRequestResource extends Resource
         return static::getModel()::count();
     }
 
-
     public static function form(Form $form): Form
     {
         return $form
             ->schema([
-                Forms\Components\Select::make('client_id')
-                    ->relationship('client', 'name')
-                    ->searchable()
-                    ->preload()
-                    ->required()
-                    ->createOptionForm([
-                        Forms\Components\Grid::make(
-                            2
-                            // [
-                            // 'default' => 1,
-                            // 'sm' => 2,
-                            // 'md' => 3,
-                            // 'lg' => 4,
-                            // 'xl' => 6,
-                            // '2xl' => 8,
-                            // ]
-                        )
-                            ->schema([
-                                Forms\Components\TextInput::make('name')
-                                    ->required()
-                                    ->maxLength(255),
-                                Forms\Components\TextInput::make('email')
-                                    ->email()
-                                    ->maxLength(255),
-                                Forms\Components\Select::make('gender_id')
-                                    ->relationship('gender', 'gender')
-                                    ->searchable()
-                                    ->preload()
-                                    ->required(),
-                                Forms\Components\DatePicker::make('date_of_birth')
-                                    ->required(),
-                                Forms\Components\TextInput::make('phone_number')
-                                    ->tel()
-                                    ->required()
-                                    ->maxLength(255),
-                                Forms\Components\TextInput::make('location')
-                                    ->maxLength(255),
-                            ])
-                    ]),
-                Forms\Components\TextInput::make('delivered_by')
-                    ->maxLength(255),
-                Forms\Components\Select::make('department_id')
-                    ->relationship('department', 'name')
-                    ->required(),
-                Forms\Components\Select::make('user_id')
-                    ->relationship('user', 'name')
-                    ->searchable()
-                    ->preload()
-                    ->label('Request Received by')
-                    ->required()
-                    ->createOptionForm([
+                Forms\Components\Section::make('Client Details')
+                    ->schema([
+                        Forms\Components\Select::make('client_id')
+                            ->relationship('client', 'name')
+                            ->searchable()
+                            ->label('Client Name')
+                            ->preload()
+                            ->required()
+                            ->createOptionForm([
+                                Forms\Components\Grid::make(
+                                    2
+                                    // [
+                                    // 'default' => 1,
+                                    // 'sm' => 2,
+                                    // 'md' => 3,
+                                    // 'lg' => 4,
+                                    // 'xl' => 6,
+                                    // '2xl' => 8,
+                                    // ]
+                                )
+                                    ->schema([
+                                        Forms\Components\TextInput::make('name')
+                                            ->required()
+                                            ->maxLength(255),
+                                        Forms\Components\TextInput::make('email')
+                                            ->email()
+                                            ->maxLength(255),
+                                        Forms\Components\Select::make('gender_id')
+                                            ->relationship('gender', 'gender')
+                                            ->searchable()
+                                            ->preload()
+                                            ->required(),
+                                        Forms\Components\DatePicker::make('date_of_birth')
+                                            ->required(),
+                                        Forms\Components\TextInput::make('phone_number')
+                                            ->tel()
+                                            ->required()
+                                            ->maxLength(255),
+                                        Forms\Components\TextInput::make('location')
+                                            ->maxLength(255),
+                                    ])
+                            ]),
+                        Forms\Components\TextInput::make('delivered_by')
+                            ->maxLength(255),
+                    ])->columns(2),
 
-                    ]),
-                Forms\Components\TextInput::make('request_date')
-                    ->required()
-                    ->maxLength(255),
+                Forms\Components\Section::make('AssayLab Staff Details')
+                    ->schema([
+                        Forms\Components\Select::make('department_id')
+                            ->relationship('department', 'name')
+                            ->searchable()
+                            ->preload()
+                            ->required()
+                            ->createOptionForm([
+                                Forms\Components\Grid::make(2)
+                                    ->schema([
+                                        Forms\Components\TextInput::make('name')
+                                            ->required()
+                                            ->maxLength(255)
+                                            ->afterStateUpdated(function (Closure $get, Closure $set, ?string $state) {
+                                                if (!$get('is_slug') && filled($state)) {
+                                                    $set('slug', substr(strtoupper(Str::slug($state)), 0, 3));
+                                                }
+                                            })
+                                            ->reactive()
+                                            ->label('Department Name'),
+                                        Forms\Components\TextInput::make('slug')
+                                            ->required()
+                                            ->maxLength(5)
+                                            ->disabled()
+                                            ->afterStateUpdated(function (Closure $set) {
+                                                $set('is_slug', true);
+                                            })
+                                            ->label('Department Code'),
+                                    ])
+                            ]),
+                        Forms\Components\Select::make('user_id')
+                            ->relationship('user', 'name')
+                            ->searchable()
+                            ->preload()
+                            ->label('Request Received by')
+                            ->required()
+                            ->createOptionForm([
+                                Forms\Components\Grid::make(
+                                    2
+                                    // [
+                                    // 'default' => 1,
+                                    // 'sm' => 2,
+                                    // 'md' => 3,
+                                    // 'lg' => 4,
+                                    // 'xl' => 6,
+                                    // '2xl' => 8,
+                                    // ]
+                                )
+                                    ->schema([
+                                        Forms\Components\TextInput::make('name')
+                                            ->afterStateUpdated(function (Closure $get, Closure $set, ?string $state) {
+                                                if (!$get('is_initials') && filled($state)) {
+                                                    $words = explode(" ", $state);
+                                                    $initials = "";
+                                                    foreach ($words as $word) {
+                                                        $initials .= substr($word, 0, 1);
+                                                    }
+                                                    $set('initials', substr(strtoupper(Str::slug($initials)), 0, 5));
+                                                }
+                                            })
+                                            ->reactive()
+                                            ->required(),
+                                        Forms\Components\TextInput::make('initials')
+                                            ->required()
+                                            ->maxLength(5)
+                                            ->disabled()
+                                            ->afterStateUpdated(function (Closure $set) {
+                                                $set('is_initials', true);
+                                            })
+                                            ->label('Initials'),
+                                        Forms\Components\TextInput::make('email')
+                                            ->required()
+                                            ->email()
+                                            ->unique(table: User::class, ignorable: fn ($record) => $record)
+                                            ->label('Email'),
+                                        Forms\Components\TextInput::make('password')
+                                            ->same('passwordConfirmation')
+                                            ->password()
+                                            ->maxLength(255)
+                                            ->required(fn ($component, $get, $livewire, $model, $record, $set, $state) => $record === null)
+                                            ->dehydrateStateUsing(fn ($state) => !empty($state) ? Hash::make($state) : '')
+                                            ->label('Password'),
+                                        Forms\Components\TextInput::make('passwordConfirmation')
+                                            ->password()
+                                            ->dehydrated(false)
+                                            ->maxLength(255)
+                                            ->label('Confirm Password'),
+                                        Forms\Components\Select::make('roles')
+                                            ->multiple()
+                                            ->relationship('roles', 'name')
+                                            ->preload()
+                                            ->label('Roles'),
+                                    ])
+                            ]),
+                        Forms\Components\DatePicker::make('request_date')
+                            ->label('Request Date')
+                            ->required()
+
+                    ])->columns(2),
             ]);
     }
 
@@ -94,20 +187,35 @@ class LabRequestResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('client.name'),
-                Tables\Columns\TextColumn::make('delivered_by'),
-                Tables\Columns\TextColumn::make('department.name'),
-                Tables\Columns\TextColumn::make('user.name'),
-                Tables\Columns\TextColumn::make('request_date'),
+                Tables\Columns\TextColumn::make('client.name')
+                    ->label('Client Name')
+                    ->sortable()
+                    ->searchable(),
+                Tables\Columns\TextColumn::make('delivered_by')
+                    ->sortable()
+                    ->searchable(),
+                Tables\Columns\BadgeColumn::make('department.name')
+                    ->colors([
+                        'primary',
+                        // 'secondary' => 'draft',
+                    ])
+                    ->sortable()
+                    ->searchable(),
+                Tables\Columns\TextColumn::make('user.name')
+                    ->label('Request Received by')
+                    ->sortable()
+                    ->searchable(),
                 Tables\Columns\TextColumn::make('created_at')
+                    ->label('Request Date')
                     ->dateTime(),
                 Tables\Columns\TextColumn::make('updated_at')
                     ->dateTime(),
                 Tables\Columns\TextColumn::make('deleted_at')
+                    ->toggleable()
                     ->dateTime(),
             ])
             ->filters([
-                //
+                TrashedFilter::make(),
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
@@ -120,7 +228,7 @@ class LabRequestResource extends Resource
     public static function getRelations(): array
     {
         return [
-            //
+            LabSamplesRelationManager::class,
         ];
     }
 
