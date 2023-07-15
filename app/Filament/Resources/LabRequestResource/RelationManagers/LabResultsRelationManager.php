@@ -103,7 +103,8 @@ class LabResultsRelationManager extends RelationManager
                 TrashedFilter::make(),
             ])
             ->headerActions([
-                Tables\Actions\CreateAction::make(),
+                Tables\Actions\CreateAction::make()
+                ->label('New Lab Result'),
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
