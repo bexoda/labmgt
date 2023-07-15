@@ -5,6 +5,7 @@ namespace App\Filament\Resources;
 use Closure;
 use Filament\Forms;
 use Filament\Tables;
+use App\Models\Client;
 use App\Models\LabRequest;
 use Illuminate\Support\Str;
 use Filament\Resources\Form;
@@ -43,6 +44,12 @@ class LabRequestResource extends Resource
                             ->label('Client Name')
                             ->preload()
                             ->required()
+                            ->afterStateUpdated(function (Closure $get, Closure $set, ?string $state) {
+                                if (!$get('is_delivered_by_slug') && filled($state)) {
+                                    $set('delivered_by', Client::find($state)->name);
+                                }
+                            })
+                            ->reactive()
                             ->createOptionForm([
                                 Forms\Components\Grid::make(
                                     2
@@ -78,8 +85,13 @@ class LabRequestResource extends Resource
                                     ])
                             ]),
                         Forms\Components\TextInput::make('delivered_by')
-                            ->maxLength(255),
-                    ])->columns(2),
+                            ->helperText('Modify if the client isn\'t the patient')
+                            ->maxLength(255)
+                            ->afterStateUpdated(function (Closure $set) {
+                                $set('is_delivered_by_slug', true);
+                            }),
+                    ])->columns(2)
+                    ->collapsible(),
 
                 Forms\Components\Section::make('AssayLab Staff Details')
                     ->schema([
@@ -95,18 +107,18 @@ class LabRequestResource extends Resource
                                             ->required()
                                             ->maxLength(255)
                                             ->afterStateUpdated(function (Closure $get, Closure $set, ?string $state) {
-                                                if (!$get('is_slug') && filled($state)) {
-                                                    $set('slug', substr(strtoupper(Str::slug($state)), 0, 3));
+                                                if (!$get('is_department_slug') && filled($state)) {
+                                                    $set('department_slug', substr(strtoupper(Str::slug($state)), 0, 3));
                                                 }
                                             })
                                             ->reactive()
                                             ->label('Department Name'),
-                                        Forms\Components\TextInput::make('slug')
+                                        Forms\Components\TextInput::make('department_slug')
                                             ->required()
                                             ->maxLength(5)
                                             ->disabled()
                                             ->afterStateUpdated(function (Closure $set) {
-                                                $set('is_slug', true);
+                                                $set('is_department_slug', true);
                                             })
                                             ->label('Department Code'),
                                     ])
@@ -175,11 +187,8 @@ class LabRequestResource extends Resource
                                             ->label('Roles'),
                                     ])
                             ]),
-                        Forms\Components\DatePicker::make('request_date')
-                            ->label('Request Date')
-                            ->required()
-
-                    ])->columns(2),
+                    ])->columns(2)
+                    ->collapsible(),
             ]);
     }
 
