@@ -39,18 +39,18 @@ class DepartmentResource extends Resource
                     ->required()
                     ->maxLength(255)
                     ->afterStateUpdated(function (Closure $get, Closure $set, ?string $state) {
-                        if (!$get('is_slug') && filled($state)) {
-                            $set('slug', substr(strtoupper(Str::slug($state)), 0, 3));
+                        if (!$get('is_department_slug') && filled($state)) {
+                            $set('department_slug', substr(strtoupper(Str::slug($state)), 0, 3));
                         }
                     })
                     ->reactive()
                     ->label('Department Name'),
-                Forms\Components\TextInput::make('slug')
+                Forms\Components\TextInput::make('department_slug')
                     ->required()
                     ->maxLength(5)
                     ->disabled()
                     ->afterStateUpdated(function (Closure $set) {
-                        $set('is_slug', true);
+                        $set('is_department_slug', true);
                     })
                     ->label('Department Code'),
             ]);
