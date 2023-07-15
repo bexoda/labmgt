@@ -21,6 +21,7 @@ class LabSamplesRelationManager extends RelationManager
         return $form
             ->schema([
                 Forms\Components\TextInput::make('label')
+                    ->label('Sample Name')
                     ->required()
                     ->maxLength(255),
             ]);
@@ -30,7 +31,10 @@ class LabSamplesRelationManager extends RelationManager
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('label'),
+                Tables\Columns\TextColumn::make('label')
+                ->label('Sample Name')
+                ->sortable()
+                ->searchable(),
             ])
             ->filters([
                 //
