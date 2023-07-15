@@ -1,6 +1,6 @@
 <?php
 
-use App\Models\Department;
+use App\Models\Gender;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
@@ -12,16 +12,16 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('users', function (Blueprint $table) {
+        Schema::create('clients', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->string('initials');
-            $table->string('email')->unique();
-            $table->foreignIdFor(Department::class)->nullable();
-            $table->timestamp('email_verified_at')->nullable();
-            $table->string('password');
-            $table->rememberToken();
+            $table->string('email')->unique()->nullable();
+            $table->foreignIdFor(Gender::class);
+            $table->string('date_of_birth')->nullable();
+            $table->string('phone_number')->unique();
+            $table->string('location')->nullable();
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 
@@ -30,6 +30,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('users');
+        Schema::dropIfExists('clients');
     }
 };
