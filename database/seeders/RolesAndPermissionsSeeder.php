@@ -93,6 +93,7 @@ class RolesAndPermissionsSeeder extends Seeder
         User::create([
             'name' => 'AssayLab Admin',
             // 'is_admin' => true,
+            'initials' => 'AA',
             'email' => 'admin@labmgt.com',
             'email_verified_at' => now(),
             'password' => Hash::make('password'),
@@ -102,6 +103,7 @@ class RolesAndPermissionsSeeder extends Seeder
         User::create([
             'name' => 'AssayLab Staff',
             // 'is_admin' => true,
+            'initials' => 'AS',
             'email' => 'staff@labmgt.com',
             'email_verified_at' => now(),
             'password' => Hash::make('password1'),
@@ -111,6 +113,7 @@ class RolesAndPermissionsSeeder extends Seeder
         User::create([
             'name' => 'AssayLab Delivery Staff',
             // 'is_admin' => true,
+            'initials' => 'ADS',
             'email' => 'delivery@labmgt.com',
             'email_verified_at' => now(),
             'password' => Hash::make('password2'),
