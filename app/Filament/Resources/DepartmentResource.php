@@ -5,31 +5,30 @@ namespace App\Filament\Resources;
 use Closure;
 use Filament\Forms;
 use Filament\Tables;
+use Filament\Forms\Get;
+use Filament\Forms\Set;
+use Filament\Forms\Form;
 use App\Models\Department;
+use Filament\Tables\Table;
 use Illuminate\Support\Str;
-use Filament\Resources\Form;
-use Filament\Resources\Table;
 use Filament\Resources\Resource;
 use Illuminate\Database\Eloquent\Builder;
-use Filament\Tables\Filters\TrashedFilter;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use App\Filament\Resources\DepartmentResource\Pages;
-use App\Filament\Resources\DepartmentResource\RelationManagers\UserRelationManager;
 use App\Filament\Resources\DepartmentResource\RelationManagers\UsersRelationManager;
 
 class DepartmentResource extends Resource
 {
     protected static ?string $model = Department::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-chip';
+    protected static ?string $navigationIcon = 'heroicon-o-cpu-chip';
 
     protected static ?string $navigationGroup = 'Staff';
 
-    protected static function getNavigationBadge(): ?string
+    public static function getNavigationBadge(): ?string
     {
         return static::getModel()::count();
     }
-
 
     public static function form(Form $form): Form
     {
@@ -38,18 +37,18 @@ class DepartmentResource extends Resource
                 Forms\Components\TextInput::make('name')
                     ->required()
                     ->maxLength(255)
-                    ->afterStateUpdated(function (Closure $get, Closure $set, ?string $state) {
+                    ->live(onBlur: true)
+                    ->afterStateUpdated(function (Get $get, Set $set, ?string $state) {
                         if (!$get('is_department_slug') && filled($state)) {
                             $set('department_slug', substr(strtoupper(Str::slug($state)), 0, 3));
                         }
                     })
-                    ->reactive()
                     ->label('Department Name'),
                 Forms\Components\TextInput::make('department_slug')
                     ->required()
+                    ->readOnly()
                     ->maxLength(5)
-                    ->disabled()
-                    ->afterStateUpdated(function (Closure $set) {
+                    ->afterStateUpdated(function (Set $set) {
                         $set('is_department_slug', true);
                     })
                     ->label('Department Code'),
@@ -62,32 +61,40 @@ class DepartmentResource extends Resource
             ->columns([
                 Tables\Columns\TextColumn::make('name')
                     ->sortable()
-                    ->searchable()
-                    ->label('Department Name'),
+                    ->searchable(),
                 Tables\Columns\TextColumn::make('department_slug')
+                    ->label('Department Slug')
                     ->sortable()
-                    ->searchable()
-                    ->label('Department Initials'),
+                    ->searchable(),
                 Tables\Columns\TextColumn::make('created_at')
-                    ->dateTime('D j M Y, G:i:s'),
+                    ->dateTime('D j M Y, G:i:s')
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: false),
                 Tables\Columns\TextColumn::make('updated_at')
-                    ->dateTime('D j M Y, G:i:s'),
+                    ->dateTime('D j M Y, G:i:s')
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('deleted_at')
-                    ->toggleable()
-                    ->dateTime('D j M Y, G:i:s'),
+                    ->dateTime('D j M Y, G:i:s')
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
-                TrashedFilter::make(),
+                Tables\Filters\TrashedFilter::make(),
             ])
             ->actions([
                 Tables\Actions\ViewAction::make(),
-                Tables\Actions\ActionGroup::make([
-                    Tables\Actions\EditAction::make(),
-                    Tables\Actions\DeleteAction::make(),
-                ]),
+                Tables\Actions\EditAction::make(),
             ])
             ->bulkActions([
-                Tables\Actions\DeleteBulkAction::make(),
+                Tables\Actions\BulkActionGroup::make([
+                    Tables\Actions\DeleteBulkAction::make(),
+                    Tables\Actions\ForceDeleteBulkAction::make(),
+                    Tables\Actions\RestoreBulkAction::make(),
+                ]),
+            ])
+            ->emptyStateActions([
+                Tables\Actions\CreateAction::make()->label('New Department'),
             ]);
     }
 
@@ -106,5 +113,13 @@ class DepartmentResource extends Resource
             'view' => Pages\ViewDepartment::route('/{record}'),
             'edit' => Pages\EditDepartment::route('/{record}/edit'),
         ];
+    }
+
+    public static function getEloquentQuery(): Builder
+    {
+        return parent::getEloquentQuery()
+            ->withoutGlobalScopes([
+                SoftDeletingScope::class,
+            ]);
     }
 }

@@ -3,7 +3,7 @@
 namespace App\Filament\Resources\LabResultResource\Pages;
 
 use App\Filament\Resources\LabResultResource;
-use Filament\Pages\Actions;
+use Filament\Actions;
 use Filament\Resources\Pages\CreateRecord;
 
 class CreateLabResult extends CreateRecord

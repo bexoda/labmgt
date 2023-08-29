@@ -20,7 +20,6 @@ class RolesAndPermissionsSeeder extends Seeder
         // reset cached roles and permissions
         app()[\Spatie\Permission\PermissionRegistrar::class]->forgetCachedPermissions();
 
-
         //ASSAYLAB STAFF MODEL
         $staffPermissionCreate = Permission::create(['name' => 'create: staff']);
         $staffPermissionRead = Permission::create(['name' => 'read: staff']);
@@ -62,7 +61,6 @@ class RolesAndPermissionsSeeder extends Seeder
             $adminPermissionUpdate,
         ]);
 
-
         $staffRole = Role::create(['name' => 'AssayLab Staff'])->syncPermissions([
             // $staffPermissionCreate,
             $staffPermissionRead,
@@ -79,8 +77,7 @@ class RolesAndPermissionsSeeder extends Seeder
             // $adminPermissionRead,
             // $adminPermissionUpdate,
 
-    ]);
-
+        ]);
 
         $deliveryStaffRole = Role::create(['name' => 'AssayLab Delivery Staff'])->syncPermissions([
             $staffPermissionRead,
@@ -88,7 +85,6 @@ class RolesAndPermissionsSeeder extends Seeder
             $permissionRead,
 
         ]);
-
 
         User::create([
             'name' => 'AssayLab Admin',
@@ -119,16 +115,5 @@ class RolesAndPermissionsSeeder extends Seeder
             'password' => Hash::make('password2'),
             'remember_token' => Str::random(60),
         ])->assignRole($deliveryStaffRole);
-
-        // for ($i = 1; $i < 5; $i++) {
-        //     User::create([
-        //         'name' => 'App User ' . $i,
-        //         'is_admin' => false,
-        //         'email' => 'appuser' . $i . '@labmgt.com',
-        //         'email_verified_at' => now(),
-        //         'password' => '@CE9c3@2W7vb',
-        //         'remember_token' => Str::random(60),
-        //     ])->assignRole($userRole);
-        // }
     }
 }

@@ -3,17 +3,20 @@
 namespace App\Filament\Resources\LabRequestResource\Pages;
 
 use App\Filament\Resources\LabRequestResource;
-use Filament\Pages\Actions;
+use Filament\Actions;
 use Filament\Resources\Pages\EditRecord;
 
 class EditLabRequest extends EditRecord
 {
     protected static string $resource = LabRequestResource::class;
 
-    protected function getActions(): array
+    protected function getHeaderActions(): array
     {
         return [
+            Actions\ViewAction::make(),
             Actions\DeleteAction::make(),
+            Actions\ForceDeleteAction::make(),
+            Actions\RestoreAction::make(),
         ];
     }
 }

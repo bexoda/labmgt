@@ -17,6 +17,7 @@ return new class extends Migration
             $table->string('name');
             $table->string('initials');
             $table->string('email')->unique();
+            $table->string('staffId')->nullable();
             $table->foreignIdFor(Department::class)->nullable();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');

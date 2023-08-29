@@ -2,17 +2,16 @@
 
 namespace App\Filament\Resources;
 
-use Filament\Forms;
-use Filament\Tables;
-use App\Models\LabResult;
-use Filament\Resources\Form;
-use Filament\Resources\Table;
-use Filament\Resources\Resource;
-use Illuminate\Database\Eloquent\Builder;
-use Filament\Tables\Filters\TrashedFilter;
 use App\Filament\Resources\LabResultResource\Pages;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
 use App\Filament\Resources\LabResultResource\RelationManagers;
+use App\Models\LabResult;
+use Filament\Forms;
+use Filament\Forms\Form;
+use Filament\Resources\Resource;
+use Filament\Tables;
+use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class LabResultResource extends Resource
 {
@@ -20,9 +19,14 @@ class LabResultResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-scale';
 
+
     protected static ?string $navigationGroup = 'Operations';
 
-    protected static bool $shouldRegisterNavigation = true;
+    public static function getNavigationBadge(): ?string
+    {
+        return static::getModel()::count();
+    }
+
 
     public static function form(Form $form): Form
     {
@@ -31,57 +35,63 @@ class LabResultResource extends Resource
                 // Forms\Components\Select::make('lab_request_id')
                 //     ->relationship('labRequest', 'id')
                 //     ->required(),
-                Forms\Components\Select::make('user_id')
-                    ->relationship('user', 'name')
-                    ->required(),
+                Forms\Components\TimePicker::make('time')
+                    ->default(now()),
+                Forms\Components\TextInput::make('sampleId')
+                    ->label('Sample ID'),
                 Forms\Components\TextInput::make('Mn')
-                    ->required()
+                    ->numeric()
                     ->maxLength(255),
                 Forms\Components\TextInput::make('Sol_Mn')
-                    ->required()
+                    ->numeric()
                     ->maxLength(255),
                 Forms\Components\TextInput::make('Fe')
-                    ->required()
+                    ->numeric()
                     ->maxLength(255),
                 Forms\Components\TextInput::make('B')
-                    ->required()
+                    ->numeric()
                     ->maxLength(255),
                 Forms\Components\TextInput::make('MnO2')
-                    ->required()
+                    ->numeric()
                     ->maxLength(255),
                 Forms\Components\TextInput::make('SiO2')
-                    ->required()
+                    ->numeric()
                     ->maxLength(255),
                 Forms\Components\TextInput::make('Al2O3')
-                    ->required()
+                    ->numeric()
                     ->maxLength(255),
                 Forms\Components\TextInput::make('P')
-                    ->required()
+                    ->numeric()
                     ->maxLength(255),
                 Forms\Components\TextInput::make('MgO')
-                    ->required()
+                    ->numeric()
                     ->maxLength(255),
                 Forms\Components\TextInput::make('CaO')
-                    ->required()
+                    ->numeric()
                     ->maxLength(255),
                 Forms\Components\TextInput::make('Au')
-                    ->required()
+                    ->numeric()
                     ->maxLength(255),
-            ]);
+            ])->columns(5);
     }
 
     public static function table(Table $table): Table
     {
         return $table
             ->columns([
+                Tables\Columns\TextColumn::make('time'),
+                Tables\Columns\TextColumn::make('sampleId')
+                    ->label('Sample ID')
+                    ->searchable()
+                    ->sortable(),
+                Tables\Columns\TextColumn::make('labRequest.id')
+                    ->sortable()
+                    ->searchable()
+                    ->label('Code'),
                 Tables\Columns\TextColumn::make('labRequest.client.name')
                     ->sortable()
                     ->searchable()
                     ->label('Client Name'),
-                Tables\Columns\TextColumn::make('user.name')
-                    ->sortable()
-                    ->searchable()
-                    ->label('Result Prepared by'),
                 Tables\Columns\TextColumn::make('Mn'),
                 Tables\Columns\TextColumn::make('Sol_Mn'),
                 Tables\Columns\TextColumn::make('Fe'),
@@ -96,25 +106,35 @@ class LabResultResource extends Resource
                 Tables\Columns\TextColumn::make('created_at')
                     ->sortable()
                     ->searchable()
-                    ->dateTime('D jS M Y, G:i:s'),
+                    ->dateTime('D jS M Y, G:i:s')
+                    ->toggleable(isToggledHiddenByDefault: false),
                 Tables\Columns\TextColumn::make('updated_at')
                     ->sortable()
                     ->searchable()
                     ->toggleable()
-                    ->dateTime('D jS M Y, G:i:s'),
+                    ->dateTime('D jS M Y, G:i:s')
+                    ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('deleted_at')
                     ->toggleable()
-                    ->dateTime('D jS M Y, G:i:s'),
+                    ->dateTime('D jS M Y, G:i:s')
+                    ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
-                TrashedFilter::make()
+                Tables\Filters\TrashedFilter::make(),
             ])
             ->actions([
+                Tables\Actions\ViewAction::make(),
                 Tables\Actions\EditAction::make(),
-                Tables\Actions\DeleteAction::make(),
             ])
             ->bulkActions([
-                Tables\Actions\DeleteBulkAction::make(),
+                Tables\Actions\BulkActionGroup::make([
+                    Tables\Actions\DeleteBulkAction::make(),
+                    Tables\Actions\ForceDeleteBulkAction::make(),
+                    Tables\Actions\RestoreBulkAction::make(),
+                ]),
+            ])
+            ->emptyStateActions([
+                Tables\Actions\CreateAction::make(),
             ]);
     }
 
@@ -130,7 +150,16 @@ class LabResultResource extends Resource
         return [
             'index' => Pages\ListLabResults::route('/'),
             'create' => Pages\CreateLabResult::route('/create'),
+            'view' => Pages\ViewLabResult::route('/{record}'),
             'edit' => Pages\EditLabResult::route('/{record}/edit'),
         ];
+    }
+
+    public static function getEloquentQuery(): Builder
+    {
+        return parent::getEloquentQuery()
+            ->withoutGlobalScopes([
+                SoftDeletingScope::class,
+            ]);
     }
 }

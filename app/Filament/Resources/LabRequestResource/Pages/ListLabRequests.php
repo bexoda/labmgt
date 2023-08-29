@@ -3,17 +3,17 @@
 namespace App\Filament\Resources\LabRequestResource\Pages;
 
 use App\Filament\Resources\LabRequestResource;
-use Filament\Pages\Actions;
+use Filament\Actions;
 use Filament\Resources\Pages\ListRecords;
 
 class ListLabRequests extends ListRecords
 {
     protected static string $resource = LabRequestResource::class;
 
-    protected function getActions(): array
+    protected function getHeaderActions(): array
     {
         return [
-            Actions\CreateAction::make()->label('New Lab Request'),
+            Actions\CreateAction::make(),
         ];
     }
 }
