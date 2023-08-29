@@ -3,78 +3,72 @@
 namespace App\Filament\Resources\LabRequestResource\RelationManagers;
 
 use Filament\Forms;
-use Filament\Resources\Form;
-use Filament\Resources\RelationManagers\RelationManager;
-use Filament\Resources\Table;
 use Filament\Tables;
-use Filament\Tables\Filters\TrashedFilter;
+use Filament\Forms\Form;
+use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
+use Filament\Tables\Filters\TrashedFilter;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Filament\Resources\RelationManagers\RelationManager;
 
 class LabResultsRelationManager extends RelationManager
 {
     protected static string $relationship = 'labResults';
 
-    protected static ?string $recordTitleAttribute = 'id';
-
-    public static function form(Form $form): Form
+    public function form(Form $form): Form
     {
         return $form
             ->schema([
                 // Forms\Components\Select::make('lab_request_id')
                 //     ->relationship('labRequest', 'id')
                 //     ->required(),
-                Forms\Components\Select::make('user_id')
-                    ->relationship('user', 'name')
-                    ->required(),
+                Forms\Components\TimePicker::make('time')
+                    ->default(now()),
+                Forms\Components\TextInput::make('sampleId')
+                    ->label('Sample ID'),
                 Forms\Components\TextInput::make('Mn')
-                    ->required()
-                    ->maxLength(255),
+                    ->numeric(),
                 Forms\Components\TextInput::make('Sol_Mn')
-                    ->required()
-                    ->maxLength(255),
+                    ->numeric(),
                 Forms\Components\TextInput::make('Fe')
-                    ->required()
-                    ->maxLength(255),
+                    ->numeric(),
                 Forms\Components\TextInput::make('B')
-                    ->required()
-                    ->maxLength(255),
+                    ->numeric(),
                 Forms\Components\TextInput::make('MnO2')
-                    ->required()
-                    ->maxLength(255),
+                    ->numeric(),
                 Forms\Components\TextInput::make('SiO2')
-                    ->required()
-                    ->maxLength(255),
+                    ->numeric(),
                 Forms\Components\TextInput::make('Al2O3')
-                    ->required()
-                    ->maxLength(255),
+                    ->numeric(),
                 Forms\Components\TextInput::make('P')
-                    ->required()
-                    ->maxLength(255),
+                    ->numeric(),
                 Forms\Components\TextInput::make('MgO')
-                    ->required()
-                    ->maxLength(255),
+                    ->numeric(),
                 Forms\Components\TextInput::make('CaO')
-                    ->required()
-                    ->maxLength(255),
+                    ->numeric(),
                 Forms\Components\TextInput::make('Au')
-                    ->required()
-                    ->maxLength(255),
-            ]);
+                    ->numeric(),
+            ])->columns(5);
     }
 
-    public static function table(Table $table): Table
+    public function table(Table $table): Table
     {
         return $table
+            ->recordTitleAttribute('sampleId')
             ->columns([
+                Tables\Columns\TextColumn::make('time'),
+                Tables\Columns\TextColumn::make('sampleId')
+                    ->label('Sample ID')
+                    ->searchable()
+                    ->sortable(),
+                Tables\Columns\TextColumn::make('labRequest.id')
+                    ->sortable()
+                    ->searchable()
+                    ->label('Lab Request Code'),
                 Tables\Columns\TextColumn::make('labRequest.client.name')
                     ->sortable()
                     ->searchable()
                     ->label('Client Name'),
-                Tables\Columns\TextColumn::make('user.name')
-                    ->sortable()
-                    ->searchable()
-                    ->label('Result Prepared by'),
                 Tables\Columns\TextColumn::make('Mn'),
                 Tables\Columns\TextColumn::make('Sol_Mn'),
                 Tables\Columns\TextColumn::make('Fe'),
@@ -89,29 +83,36 @@ class LabResultsRelationManager extends RelationManager
                 Tables\Columns\TextColumn::make('created_at')
                     ->sortable()
                     ->searchable()
-                    ->dateTime('D jS M Y, G:i:s'),
+                    ->dateTime('D jS M Y, G:i:s')
+                    ->toggleable(isToggledHiddenByDefault: false),
                 Tables\Columns\TextColumn::make('updated_at')
                     ->sortable()
                     ->searchable()
                     ->toggleable()
-                    ->dateTime('D jS M Y, G:i:s'),
+                    ->dateTime('D jS M Y, G:i:s')
+                    ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('deleted_at')
                     ->toggleable()
-                    ->dateTime('D jS M Y, G:i:s'),
+                    ->dateTime('D jS M Y, G:i:s')
+                    ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
                 TrashedFilter::make(),
             ])
             ->headerActions([
-                Tables\Actions\CreateAction::make()
-                ->label('New Lab Result'),
+                Tables\Actions\CreateAction::make(),
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
                 Tables\Actions\DeleteAction::make(),
             ])
             ->bulkActions([
-                Tables\Actions\DeleteBulkAction::make(),
+                Tables\Actions\BulkActionGroup::make([
+                    Tables\Actions\DeleteBulkAction::make(),
+                ]),
+            ])
+            ->emptyStateActions([
+                Tables\Actions\CreateAction::make(),
             ]);
     }
 }
