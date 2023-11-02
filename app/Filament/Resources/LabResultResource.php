@@ -2,16 +2,17 @@
 
 namespace App\Filament\Resources;
 
-use App\Filament\Resources\LabResultResource\Pages;
-use App\Filament\Resources\LabResultResource\RelationManagers;
-use App\Models\LabResult;
 use Filament\Forms;
-use Filament\Forms\Form;
-use Filament\Resources\Resource;
 use Filament\Tables;
+use Filament\Forms\Form;
+use App\Models\LabResult;
 use Filament\Tables\Table;
+use Filament\Resources\Resource;
 use Illuminate\Database\Eloquent\Builder;
+use App\Filament\Resources\LabResultResource\Pages;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use pxlrbt\FilamentExcel\Actions\Tables\ExportBulkAction;
+use App\Filament\Resources\LabResultResource\RelationManagers;
 
 class LabResultResource extends Resource
 {
@@ -19,6 +20,7 @@ class LabResultResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-scale';
 
+    protected static bool $shouldRegisterNavigation = true;
 
     protected static ?string $navigationGroup = 'Operations';
 
@@ -87,7 +89,7 @@ class LabResultResource extends Resource
                 Tables\Columns\TextColumn::make('labRequest.id')
                     ->sortable()
                     ->searchable()
-                    ->label('Code'),
+                    ->label('Job Number'),
                 Tables\Columns\TextColumn::make('labRequest.client.name')
                     ->sortable()
                     ->searchable()
@@ -121,6 +123,7 @@ class LabResultResource extends Resource
             ])
             ->filters([
                 Tables\Filters\TrashedFilter::make(),
+                
             ])
             ->actions([
                 Tables\Actions\ViewAction::make(),
@@ -128,6 +131,7 @@ class LabResultResource extends Resource
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
+                    ExportBulkAction::make(),
                     Tables\Actions\DeleteBulkAction::make(),
                     Tables\Actions\ForceDeleteBulkAction::make(),
                     Tables\Actions\RestoreBulkAction::make(),

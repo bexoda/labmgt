@@ -2,17 +2,19 @@
 
 namespace App\Filament\Resources;
 
-use App\Filament\Resources\LabRequestResource\Pages;
-use App\Filament\Resources\LabRequestResource\RelationManagers;
-use App\Filament\Resources\LabRequestResource\RelationManagers\LabResultsRelationManager;
-use App\Models\LabRequest;
 use Filament\Forms;
-use Filament\Forms\Form;
-use Filament\Resources\Resource;
+use App\Models\User;
 use Filament\Tables;
+use Filament\Forms\Form;
+use App\Models\LabRequest;
 use Filament\Tables\Table;
+use Filament\Resources\Resource;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use App\Filament\Resources\LabRequestResource\Pages;
+use pxlrbt\FilamentExcel\Actions\Tables\ExportBulkAction;
+use App\Filament\Resources\LabRequestResource\RelationManagers;
+use App\Filament\Resources\LabRequestResource\RelationManagers\LabResultsRelationManager;
 
 class LabRequestResource extends Resource
 {
@@ -63,7 +65,7 @@ class LabRequestResource extends Resource
                         Forms\Components\DatePicker::make('request_date')
                             ->required(),
                         Forms\Components\Select::make('delivered_by')
-                            ->relationship('user', 'name')
+                            ->options(User::all()->pluck('name'))
                             ->searchable()
                             ->preload()
                             ->label('Delivered By'),
@@ -151,6 +153,10 @@ class LabRequestResource extends Resource
     {
         return $table
             ->columns([
+                Tables\Columns\TextColumn::make('id')
+                    ->label('Job Number')
+                    ->searchable()
+                    ->sortable(),
                 Tables\Columns\TextColumn::make('client.name')
                     ->numeric()
                     ->searchable()
@@ -223,6 +229,7 @@ class LabRequestResource extends Resource
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
+                    ExportBulkAction::make(),
                     Tables\Actions\DeleteBulkAction::make(),
                     Tables\Actions\ForceDeleteBulkAction::make(),
                     Tables\Actions\RestoreBulkAction::make(),
