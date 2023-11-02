@@ -2,9 +2,10 @@
 
 namespace App\Filament\Resources\LabResultResource\Pages;
 
-use App\Filament\Resources\LabResultResource;
 use Filament\Actions;
 use Filament\Resources\Pages\ListRecords;
+use App\Filament\Resources\LabResultResource;
+use EightyNine\ExcelImport\ExcelImportAction;
 
 class ListLabResults extends ListRecords
 {
@@ -13,6 +14,9 @@ class ListLabResults extends ListRecords
     protected function getHeaderActions(): array
     {
         return [
+            ExcelImportAction::make()
+            // ->slideOver()
+            ->color("primary"),
             Actions\CreateAction::make(),
         ];
     }

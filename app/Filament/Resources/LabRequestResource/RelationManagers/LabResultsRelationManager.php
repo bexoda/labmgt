@@ -56,15 +56,15 @@ class LabResultsRelationManager extends RelationManager
         return $table
             ->recordTitleAttribute('sampleId')
             ->columns([
+                Tables\Columns\TextColumn::make('labRequest.id')
+                    ->sortable()
+                    ->searchable()
+                    ->label('Job Number'),
                 Tables\Columns\TextColumn::make('time'),
                 Tables\Columns\TextColumn::make('sampleId')
                     ->label('Sample ID')
                     ->searchable()
                     ->sortable(),
-                Tables\Columns\TextColumn::make('labRequest.id')
-                    ->sortable()
-                    ->searchable()
-                    ->label('Lab Request Code'),
                 Tables\Columns\TextColumn::make('labRequest.client.name')
                     ->sortable()
                     ->searchable()
