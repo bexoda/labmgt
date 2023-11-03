@@ -24,8 +24,8 @@ class LabResultsRelationManager extends RelationManager
                 //     ->required(),
                 Forms\Components\TimePicker::make('time')
                     ->default(now()),
-                Forms\Components\TextInput::make('sampleId')
-                    ->label('Sample ID'),
+                Forms\Components\TextInput::make('sample_name')
+                    ->label('Sample Name'),
                 Forms\Components\TextInput::make('Mn')
                     ->numeric(),
                 Forms\Components\TextInput::make('Sol_Mn')
@@ -61,8 +61,8 @@ class LabResultsRelationManager extends RelationManager
                     ->searchable()
                     ->label('Job Number'),
                 Tables\Columns\TextColumn::make('time'),
-                Tables\Columns\TextColumn::make('sampleId')
-                    ->label('Sample ID')
+                Tables\Columns\TextColumn::make('sample_name')
+                    ->label('Sample Name')
                     ->searchable()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('labRequest.client.name')

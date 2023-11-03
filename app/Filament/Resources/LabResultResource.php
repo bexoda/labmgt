@@ -39,42 +39,45 @@ class LabResultResource extends Resource
                 //     ->required(),
                 Forms\Components\TimePicker::make('time')
                     ->default(now()),
-                Forms\Components\TextInput::make('sampleId')
-                    ->label('Sample ID'),
+                Forms\Components\TextInput::make('sample_name')
+                    ->label('Sample Name'),
                 Forms\Components\TextInput::make('Mn')
                     ->numeric()
-                    ->maxLength(255),
+                    ->inputMode('decimal'),
+                    // ->maxLength(255),
                 Forms\Components\TextInput::make('Sol_Mn')
                     ->numeric()
-                    ->maxLength(255),
+                    ->inputMode('decimal'),
+                    // ->maxLength(255),
                 Forms\Components\TextInput::make('Fe')
                     ->numeric()
-                    ->maxLength(255),
+                    ->inputMode('decimal'),
                 Forms\Components\TextInput::make('B')
                     ->numeric()
-                    ->maxLength(255),
+                    ->inputMode('decimal'),
                 Forms\Components\TextInput::make('MnO2')
                     ->numeric()
-                    ->maxLength(255),
+                    ->inputMode('decimal'),
                 Forms\Components\TextInput::make('SiO2')
                     ->numeric()
-                    ->maxLength(255),
+                    ->inputMode('decimal'),
                 Forms\Components\TextInput::make('Al2O3')
                     ->numeric()
-                    ->maxLength(255),
+                    ->inputMode('decimal'),
                 Forms\Components\TextInput::make('P')
                     ->numeric()
-                    ->maxLength(255),
+                    ->inputMode('decimal'),
                 Forms\Components\TextInput::make('MgO')
                     ->numeric()
-                    ->maxLength(255),
+                    ->inputMode('decimal'),
                 Forms\Components\TextInput::make('CaO')
                     ->numeric()
-                    ->maxLength(255),
+                    ->inputMode('decimal'),
                 Forms\Components\TextInput::make('Au')
                     ->numeric()
-                    ->maxLength(255),
+                    ->inputMode('decimal'),
             ])->columns(5);
+
     }
 
     public static function table(Table $table): Table
@@ -82,8 +85,8 @@ class LabResultResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('time'),
-                Tables\Columns\TextColumn::make('sampleId')
-                    ->label('Sample ID')
+                Tables\Columns\TextColumn::make('sample_name')
+                    ->label('Sample Name')
                     ->searchable()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('labRequest.id')
@@ -123,7 +126,7 @@ class LabResultResource extends Resource
             ])
             ->filters([
                 Tables\Filters\TrashedFilter::make(),
-                
+
             ])
             ->actions([
                 Tables\Actions\ViewAction::make(),
