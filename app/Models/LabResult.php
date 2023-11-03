@@ -11,9 +11,14 @@ class LabResult extends Model
 {
     use HasFactory, SoftDeletes;
 
+    /**
+     * The attributes that are mass assignable.
+     *
+     * @var array
+     */
     protected $fillable = [
         'time',
-        'sampleId',
+        'sample_name',
         'lab_request_id',
         'Mn',
         'Sol_Mn',
@@ -27,6 +32,7 @@ class LabResult extends Model
         'CaO',
         'Au',
     ];
+
 
     /**
      * Get the labRequest that owns the LabResult
