@@ -32,6 +32,7 @@ class LabRequest extends Model
         'titration_by',
         'plant_source_id',
         'description',
+        'user_id',
     ];
 
     /**
