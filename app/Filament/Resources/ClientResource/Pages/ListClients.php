@@ -2,13 +2,13 @@
 
 namespace App\Filament\Resources\ClientResource\Pages;
 
-use Filament\Actions;
-use App\Models\Client;
-use App\Imports\ImportClients;
-use Maatwebsite\Excel\Facades\Excel;
-use Filament\Resources\Pages\ListRecords;
 use App\Filament\Resources\ClientResource;
+use App\Imports\ImportClients;
+use App\Models\Client;
 use EightyNine\ExcelImport\ExcelImportAction;
+use Filament\Actions;
+use Filament\Resources\Pages\ListRecords;
+use Maatwebsite\Excel\Facades\Excel;
 
 class ListClients extends ListRecords
 {
@@ -18,7 +18,7 @@ class ListClients extends ListRecords
     {
         return [
             ExcelImportAction::make()
-                ->color("primary"),
+                ->color('primary'),
             Actions\CreateAction::make()->label('New Client'),
         ];
     }
@@ -34,12 +34,12 @@ class ListClients extends ListRecords
     //         Excel::import(new ImportClients, $this->file);
     //     }
 
-        // Client::create([
-        //     'name' => 'new-client',
-        //     'email' => 'new-client@gmail.com',
-        //     'phone_number' => '0345670323',
-        //     'location' => 'Kumasi',
-        // ]);
+    // Client::create([
+    //     'name' => 'new-client',
+    //     'email' => 'new-client@gmail.com',
+    //     'phone_number' => '0345670323',
+    //     'location' => 'Kumasi',
+    // ]);
     // }
 
     //     protected function getHeader()

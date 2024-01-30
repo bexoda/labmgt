@@ -2,18 +2,18 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\SoftDeletes;
-use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class LabRequest extends Model
 {
     use HasFactory, SoftDeletes;
 
     protected $fillable = [
+        'user_id',
         'client_id',
         'department_id',
         'request_date',
@@ -36,19 +36,14 @@ class LabRequest extends Model
 
     /**
      * Get the client that owns the LabRequest
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
     public function client(): BelongsTo
     {
         return $this->belongsTo(Client::class);
     }
 
-
     /**
      * Get the department that owns the LabRequest
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
     public function department(): BelongsTo
     {
@@ -57,8 +52,6 @@ class LabRequest extends Model
 
     /**
      * Get the plantSource that owns the LabRequest
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
     public function plantSource(): BelongsTo
     {
@@ -67,8 +60,6 @@ class LabRequest extends Model
 
     /**
      * Get the user that owns the LabRequest
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
     public function user(): BelongsTo
     {
@@ -77,8 +68,6 @@ class LabRequest extends Model
 
     /**
      * Get all of the labResults for the LabRequest
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
     public function labResults(): HasMany
     {

@@ -1,9 +1,9 @@
 <?php
 
 use App\Models\LabRequest;
-use Illuminate\Support\Facades\Schema;
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
@@ -14,7 +14,7 @@ return new class extends Migration
     {
         Schema::create('lab_results', function (Blueprint $table) {
             $table->id();
-            $table->foreignIdFor(LabRequest::class);
+            $table->foreignIdFor(LabRequest::class)->cascadeOnDelete();
             $table->time('time');
             $table->string('sample_name');
             $table->decimal('Mn')->nullable();

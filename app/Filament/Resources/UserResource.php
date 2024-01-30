@@ -2,21 +2,20 @@
 
 namespace App\Filament\Resources;
 
-use Filament\Forms;
+use App\Filament\Resources\UserResource\Pages;
+use App\Filament\Resources\UserResource\RelationManagers\DepartmentRelationManager;
 use App\Models\User;
-use Filament\Tables;
+use Filament\Forms;
+use Filament\Forms\Form;
 use Filament\Forms\Get;
 use Filament\Forms\Set;
-use Filament\Forms\Form;
-use Filament\Tables\Table;
-use Illuminate\Support\Str;
 use Filament\Resources\Resource;
-use Illuminate\Support\Facades\Hash;
+use Filament\Tables;
+use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
-use App\Filament\Resources\UserResource\Pages;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
-use App\Filament\Resources\UserResource\RelationManagers;
-use App\Filament\Resources\UserResource\RelationManagers\DepartmentRelationManager;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Str;
 
 class UserResource extends Resource
 {
@@ -39,9 +38,9 @@ class UserResource extends Resource
                     ->required()
                     ->live(onBlur: true)
                     ->afterStateUpdated(function (Get $get, Set $set, ?string $state) {
-                        if (!$get('is_initials') && filled($state)) {
-                            $words = explode(" ", $state);
-                            $initials = "";
+                        if (! $get('is_initials') && filled($state)) {
+                            $words = explode(' ', $state);
+                            $initials = '';
                             foreach ($words as $word) {
                                 $initials .= substr($word, 0, 1);
                             }
@@ -77,7 +76,7 @@ class UserResource extends Resource
                     ->password()
                     ->maxLength(255)
                     ->required(fn ($record) => $record === null)
-                    ->dehydrateStateUsing(fn ($state) => !empty($state) ? Hash::make($state) : '')
+                    ->dehydrateStateUsing(fn ($state) => ! empty($state) ? Hash::make($state) : '')
                     ->label('Password'),
                 Forms\Components\TextInput::make('passwordConfirmation')
                     ->password()

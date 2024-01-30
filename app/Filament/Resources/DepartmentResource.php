@@ -2,20 +2,19 @@
 
 namespace App\Filament\Resources;
 
-use Closure;
-use Filament\Forms;
-use Filament\Tables;
-use Filament\Forms\Get;
-use Filament\Forms\Set;
-use Filament\Forms\Form;
-use App\Models\Department;
-use Filament\Tables\Table;
-use Illuminate\Support\Str;
-use Filament\Resources\Resource;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
 use App\Filament\Resources\DepartmentResource\Pages;
 use App\Filament\Resources\DepartmentResource\RelationManagers\UsersRelationManager;
+use App\Models\Department;
+use Filament\Forms;
+use Filament\Forms\Form;
+use Filament\Forms\Get;
+use Filament\Forms\Set;
+use Filament\Resources\Resource;
+use Filament\Tables;
+use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Illuminate\Support\Str;
 
 class DepartmentResource extends Resource
 {
@@ -39,7 +38,7 @@ class DepartmentResource extends Resource
                     ->maxLength(255)
                     ->live(onBlur: true)
                     ->afterStateUpdated(function (Get $get, Set $set, ?string $state) {
-                        if (!$get('is_department_slug') && filled($state)) {
+                        if (! $get('is_department_slug') && filled($state)) {
                             $set('department_slug', substr(strtoupper(Str::slug($state)), 0, 3));
                         }
                     })

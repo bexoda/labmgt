@@ -4,7 +4,6 @@ namespace Database\Seeders;
 
 use App\Models\Department;
 use Illuminate\Database\Seeder;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 
 class DepartmentSeeder extends Seeder
 {
@@ -16,7 +15,7 @@ class DepartmentSeeder extends Seeder
         $departments = [
             ['name' => 'AssayLab', 'department_slug' => 'ASS'],
             ['name' => 'Geology', 'department_slug' => 'GEO'],
-            ['name' => 'Metallurgy', 'department_slug' => 'MET']
+            ['name' => 'Metallurgy', 'department_slug' => 'MET'],
         ];
 
         foreach ($departments as $department) {

@@ -2,10 +2,10 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\SoftDeletes;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class LabResult extends Model
 {
@@ -33,11 +33,8 @@ class LabResult extends Model
         'Au',
     ];
 
-
     /**
      * Get the labRequest that owns the LabResult
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
     public function labRequest(): BelongsTo
     {

@@ -3,12 +3,11 @@
 namespace Database\Seeders;
 
 use App\Models\User;
-use Illuminate\Support\Str;
 use Illuminate\Database\Seeder;
-use Spatie\Permission\Models\Role;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Str;
 use Spatie\Permission\Models\Permission;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use Spatie\Permission\Models\Role;
 
 class RolesAndPermissionsSeeder extends Seeder
 {
@@ -41,7 +40,6 @@ class RolesAndPermissionsSeeder extends Seeder
         //ADMINS
         $adminPermissionRead = Permission::create(['name' => 'read: admin']);
         $adminPermissionUpdate = Permission::create(['name' => 'update: admin']);
-
 
         //CREATE ROLES
         $adminRole = Role::create(['name' => 'Admin'])->syncPermissions([

@@ -1,6 +1,5 @@
 <?php
 
-use App\Models\User;
 use App\Models\Client;
 use App\Models\Department;
 use App\Models\PlantSource;
@@ -17,6 +16,7 @@ return new class extends Migration
     {
         Schema::create('lab_requests', function (Blueprint $table) {
             $table->id();
+            $table->unsignedBigInteger('user_id');
             $table->foreignIdFor(Client::class);
             $table->foreignIdFor(Department::class);
             $table->date('request_date');

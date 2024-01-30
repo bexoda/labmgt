@@ -3,17 +3,15 @@
 namespace App\Filament\Resources\DepartmentResource\RelationManagers;
 
 use Filament\Forms;
-use Filament\Tables;
+use Filament\Forms\Form;
 use Filament\Forms\Get;
 use Filament\Forms\Set;
-use Filament\Forms\Form;
-use Filament\Tables\Table;
-use Illuminate\Support\Str;
-use Illuminate\Support\Facades\Hash;
-use Illuminate\Database\Eloquent\Builder;
-use Filament\Tables\Filters\TrashedFilter;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Filament\Resources\RelationManagers\RelationManager;
+use Filament\Tables;
+use Filament\Tables\Filters\TrashedFilter;
+use Filament\Tables\Table;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Str;
 
 class UsersRelationManager extends RelationManager
 {
@@ -27,9 +25,9 @@ class UsersRelationManager extends RelationManager
                     ->required()
                     ->live(onBlur: true)
                     ->afterStateUpdated(function (Get $get, Set $set, ?string $state) {
-                        if (!$get('is_initials') && filled($state)) {
-                            $words = explode(" ", $state);
-                            $initials = "";
+                        if (! $get('is_initials') && filled($state)) {
+                            $words = explode(' ', $state);
+                            $initials = '';
                             foreach ($words as $word) {
                                 $initials .= substr($word, 0, 1);
                             }
@@ -65,7 +63,7 @@ class UsersRelationManager extends RelationManager
                     ->password()
                     ->maxLength(255)
                     ->required(fn ($record) => $record === null)
-                    ->dehydrateStateUsing(fn ($state) => !empty($state) ? Hash::make($state) : '')
+                    ->dehydrateStateUsing(fn ($state) => ! empty($state) ? Hash::make($state) : '')
                     ->label('Password'),
                 Forms\Components\TextInput::make('passwordConfirmation')
                     ->password()
@@ -138,9 +136,9 @@ class UsersRelationManager extends RelationManager
                     Tables\Actions\DeleteBulkAction::make(),
                 ]),
             ])
-        ->emptyStateActions([
-            Tables\Actions\CreateAction::make()
-            ->label('New User'),
-        ]);
+            ->emptyStateActions([
+                Tables\Actions\CreateAction::make()
+                    ->label('New User'),
+            ]);
     }
 }

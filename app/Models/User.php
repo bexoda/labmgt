@@ -3,20 +3,20 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Filament\Models\Contracts\FilamentUser;
 use Filament\Panel;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 use Spatie\Permission\Traits\HasRoles;
-use Illuminate\Notifications\Notifiable;
-use Filament\Models\Contracts\FilamentUser;
-use Illuminate\Database\Eloquent\SoftDeletes;
-use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Foundation\Auth\User as Authenticatable;
 
 class User extends Authenticatable implements FilamentUser
 {
-    use HasApiTokens, HasFactory, Notifiable, HasRoles, SoftDeletes;
+    use HasApiTokens, HasFactory, HasRoles, Notifiable, SoftDeletes;
 
     protected $table = 'users';
 
@@ -61,19 +61,14 @@ class User extends Authenticatable implements FilamentUser
 
     /**
      * Get the department that owns the User
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
     public function department(): BelongsTo
     {
         return $this->belongsTo(Department::class);
     }
 
-
     /**
      * Get all of the labRequests for the User
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
     public function labRequests(): HasMany
     {
@@ -82,8 +77,6 @@ class User extends Authenticatable implements FilamentUser
 
     /**
      * Get all of the labResults for the User
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
     public function labResults(): HasMany
     {

@@ -2,17 +2,16 @@
 
 namespace App\Filament\Resources;
 
-use Filament\Forms;
-use Filament\Tables;
-use Filament\Forms\Form;
-use App\Models\LabResult;
-use Filament\Tables\Table;
-use Filament\Resources\Resource;
-use Illuminate\Database\Eloquent\Builder;
 use App\Filament\Resources\LabResultResource\Pages;
+use App\Models\LabResult;
+use Filament\Forms;
+use Filament\Forms\Form;
+use Filament\Resources\Resource;
+use Filament\Tables;
+use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use pxlrbt\FilamentExcel\Actions\Tables\ExportBulkAction;
-use App\Filament\Resources\LabResultResource\RelationManagers;
 
 class LabResultResource extends Resource
 {
@@ -29,7 +28,6 @@ class LabResultResource extends Resource
         return static::getModel()::count();
     }
 
-
     public static function form(Form $form): Form
     {
         return $form
@@ -44,11 +42,11 @@ class LabResultResource extends Resource
                 Forms\Components\TextInput::make('Mn')
                     ->numeric()
                     ->inputMode('decimal'),
-                    // ->maxLength(255),
+                // ->maxLength(255),
                 Forms\Components\TextInput::make('Sol_Mn')
                     ->numeric()
                     ->inputMode('decimal'),
-                    // ->maxLength(255),
+                // ->maxLength(255),
                 Forms\Components\TextInput::make('Fe')
                     ->numeric()
                     ->inputMode('decimal'),
