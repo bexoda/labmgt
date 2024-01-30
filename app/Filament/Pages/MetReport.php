@@ -2,18 +2,14 @@
 
 namespace App\Filament\Pages;
 
-use App\Filament\Resources\LabRequestResource\Pages\ListLabRequests;
-use App\Filament\Widgets\DailyReportsWidget;
-use Filament\Pages\Concerns\ExposesTableToWidgets;
+use App\Filament\Widgets\MetReportsWidget;
 use Filament\Pages\Page;
 
-class DailyReport extends Page
+class MetReport extends Page
 {
-    // use ExposesTableToWidgets;
-
     protected static ?string $navigationIcon = 'heroicon-o-document-text';
 
-    protected static string $view = 'filament.pages.daily-report';
+    protected static string $view = 'filament.pages.met-report';
 
     // protected static ?string $title = 'Custom Page Title';
 
@@ -27,7 +23,7 @@ class DailyReport extends Page
     protected function getHeaderWidgets(): array
     {
         return [
-            DailyReportsWidget::class,
+            MetReportsWidget::class,
         ];
     }
 }
