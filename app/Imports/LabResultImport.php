@@ -9,9 +9,6 @@ use Maatwebsite\Excel\Concerns\WithHeadingRow;
 
 class LabResultImport implements ToCollection, WithHeadingRow
 {
-    /**
-     * @param Collection $rows
-     */
     public function collection(Collection $rows)
     {
         foreach ($rows as $row) {

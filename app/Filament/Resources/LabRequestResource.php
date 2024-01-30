@@ -2,19 +2,18 @@
 
 namespace App\Filament\Resources;
 
-use Filament\Forms;
-use App\Models\User;
-use Filament\Tables;
-use Filament\Forms\Form;
+use App\Filament\Resources\LabRequestResource\Pages;
+use App\Filament\Resources\LabRequestResource\RelationManagers\LabResultsRelationManager;
 use App\Models\LabRequest;
-use Filament\Tables\Table;
+use App\Models\User;
+use Filament\Forms;
+use Filament\Forms\Form;
 use Filament\Resources\Resource;
+use Filament\Tables;
+use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
-use App\Filament\Resources\LabRequestResource\Pages;
 use pxlrbt\FilamentExcel\Actions\Tables\ExportBulkAction;
-use App\Filament\Resources\LabRequestResource\RelationManagers;
-use App\Filament\Resources\LabRequestResource\RelationManagers\LabResultsRelationManager;
 
 class LabRequestResource extends Resource
 {
@@ -55,7 +54,7 @@ class LabRequestResource extends Resource
                                             ->maxLength(255),
                                         Forms\Components\TextInput::make('location')
                                             ->maxLength(255),
-                                    ])
+                                    ]),
                             ]),
                         Forms\Components\Select::make('department_id')
                             ->relationship('department', 'name')
@@ -117,7 +116,7 @@ class LabRequestResource extends Resource
                             ->searchable()
                             ->preload()
                             ->label('AAS/Titration By'),
-                        Forms\Components\Select::make('plant_source')
+                        Forms\Components\Select::make('plant_source_id')
                             ->relationship('plantSource', 'name')
                             ->searchable()
                             ->preload()
@@ -243,7 +242,7 @@ class LabRequestResource extends Resource
     public static function getRelations(): array
     {
         return [
-            LabResultsRelationManager::class
+            LabResultsRelationManager::class,
         ];
     }
 
