@@ -2,18 +2,18 @@
 
 namespace App\Filament\Widgets;
 
+use App\Filament\Resources\LabResultResource;
 use Carbon\Carbon;
-use Filament\Tables\Table;
-use Filament\Tables\Filters\Filter;
-use Filament\Tables\Filters\Indicator;
+use Filament\Forms\Components\DatePicker;
+use Filament\Tables\Columns\Summarizers\Average;
+use Filament\Tables\Columns\Summarizers\Sum;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Enums\FiltersLayout;
-use Filament\Forms\Components\DatePicker;
+use Filament\Tables\Filters\Filter;
+use Filament\Tables\Filters\Indicator;
 use Filament\Tables\Filters\SelectFilter;
-use Filament\Tables\Columns\Summarizers\Sum;
-use App\Filament\Resources\LabResultResource;
+use Filament\Tables\Table;
 use Filament\Widgets\TableWidget as BaseWidget;
-use Filament\Tables\Columns\Summarizers\Average;
 use Illuminate\Contracts\Database\Eloquent\Builder;
 use pxlrbt\FilamentExcel\Actions\Tables\ExportBulkAction;
 
@@ -114,8 +114,8 @@ class MetReportsWidget extends BaseWidget
                 SelectFilter::make('labRequest.id')
                     // ->multiple()
                     ->preload()
-                    ->relationship('labRequest', 'id'),
-                // ->label('Plant Source'),
+                    ->relationship('labRequest', 'id')
+                ->label('Job Number'),
                 Filter::make('created_at')
                     ->form([
                         DatePicker::make('created_from')->native(false)->displayFormat('D, jS M Y')->closeOnDateSelection()->default(now()->startofMonth()),
@@ -150,7 +150,7 @@ class MetReportsWidget extends BaseWidget
             ->bulkActions([
                 // BulkAction::make('Print'),
                 ExportBulkAction::make(),
-            ]);
+            ])->emptyStateHeading('No Met Report found.')->emptyStateDescription('Consider making changes to the filtered date range.');
 
     }
 }

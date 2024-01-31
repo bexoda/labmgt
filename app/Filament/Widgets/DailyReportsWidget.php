@@ -90,7 +90,7 @@ class DailyReportsWidget extends BaseWidget
             ->bulkActions([
                 // BulkAction::make('Print'),
                 ExportBulkAction::make(),
-            ]);
+            ])->emptyStateHeading('No Daily Report found.')->emptyStateDescription('Consider making changes to the filtered date range.');
 
     }
 }
