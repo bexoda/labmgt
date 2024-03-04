@@ -40,4 +40,24 @@ class LabResult extends Model
     {
         return $this->belongsTo(LabRequest::class);
     }
+
+    /**
+     * The attributes that should be cast.
+     *
+     * @var array<string, string>
+     */
+    protected $casts = [
+        'Mn' => 'decimal:2',
+        'Sol_Mn' => 'decimal:2',
+        'Fe' => 'decimal:2',
+        'B' => 'decimal:2',
+        'MnO2' => 'decimal:2',
+        'SiO2' => 'decimal:2',
+        'Al2O3' => 'decimal:2',
+        'P' => 'decimal:2',
+        'MgO' => 'decimal:2',
+        'CaO' => 'decimal:2',
+        'Au' => 'decimal:2',
+    ];
+
 }
