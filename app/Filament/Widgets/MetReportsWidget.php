@@ -2,18 +2,24 @@
 
 namespace App\Filament\Widgets;
 
-use App\Filament\Resources\LabResultResource;
 use Carbon\Carbon;
-use Filament\Forms\Components\DatePicker;
-use Filament\Tables\Columns\Summarizers\Average;
-use Filament\Tables\Columns\Summarizers\Sum;
-use Filament\Tables\Columns\TextColumn;
-use Filament\Tables\Enums\FiltersLayout;
+use Filament\Forms\Get;
+use App\Models\LabResult;
+use Filament\Tables\Table;
+use Illuminate\Support\Collection;
+use Filament\Tables\Actions\Action;
 use Filament\Tables\Filters\Filter;
 use Filament\Tables\Filters\Indicator;
+use Filament\Tables\Actions\BulkAction;
+use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Enums\FiltersLayout;
+use Filament\Forms\Components\DatePicker;
 use Filament\Tables\Filters\SelectFilter;
-use Filament\Tables\Table;
+use Filament\Tables\Columns\Summarizers\Sum;
+use App\Filament\Resources\LabResultResource;
+use App\Http\Controllers\DownloadPdfController;
 use Filament\Widgets\TableWidget as BaseWidget;
+use Filament\Tables\Columns\Summarizers\Average;
 use Illuminate\Contracts\Database\Eloquent\Builder;
 use pxlrbt\FilamentExcel\Actions\Tables\ExportBulkAction;
 
@@ -25,7 +31,8 @@ class MetReportsWidget extends BaseWidget
     {
         return $table
             ->query(
-                LabResultResource::getEloquentQuery())
+                LabResultResource::getEloquentQuery()
+            )
             ->defaultPaginationPageOption(5)
             ->defaultSort('time', 'asc')
             ->columns([
@@ -115,7 +122,7 @@ class MetReportsWidget extends BaseWidget
                     // ->multiple()
                     ->preload()
                     ->relationship('labRequest', 'id')
-                ->label('Job Number'),
+                    ->label('Job Number'),
                 Filter::make('created_at')
                     ->form([
                         DatePicker::make('created_from')->native(false)->displayFormat('D, jS M Y')->closeOnDateSelection()->default(now()->startofMonth()),
@@ -125,22 +132,22 @@ class MetReportsWidget extends BaseWidget
                         return $query
                             ->when(
                                 $data['created_from'],
-                                fn (Builder $query, $date): Builder => $query->whereDate('created_at', '>=', $date),
+                                fn(Builder $query, $date): Builder => $query->whereDate('created_at', '>=', $date),
                             )
                             ->when(
                                 $data['created_until'],
-                                fn (Builder $query, $date): Builder => $query->whereDate('created_at', '<=', $date),
+                                fn(Builder $query, $date): Builder => $query->whereDate('created_at', '<=', $date),
                             );
                     })->indicateUsing(function (array $data): array {
                         $indicators = [];
 
                         if ($data['created_from'] ?? null) {
-                            $indicators[] = Indicator::make('Created from '.Carbon::parse($data['created_from'])->toFormattedDateString())
+                            $indicators[] = Indicator::make('Created from ' . Carbon::parse($data['created_from'])->toFormattedDateString())
                                 ->removeField('created_from');
                         }
 
                         if ($data['created_until'] ?? null) {
-                            $indicators[] = Indicator::make('Created until '.Carbon::parse($data['created_until'])->toFormattedDateString())
+                            $indicators[] = Indicator::make('Created until ' . Carbon::parse($data['created_until'])->toFormattedDateString())
                                 ->removeField('created_until');
                         }
 
@@ -149,7 +156,12 @@ class MetReportsWidget extends BaseWidget
             ], layout: FiltersLayout::AboveContentCollapsible)->filtersFormColumns(3)
             ->bulkActions([
                 // BulkAction::make('Print'),
-                ExportBulkAction::make(),
+                ExportBulkAction::make()
+                    ->label('Export XLSX'),
+                BulkAction::make('Download Pdf')
+                    ->label('Download PDF')
+                    ->icon('heroicon-o-document-arrow-down')
+                    ->action(fn(Collection $records, array $data) => (new DownloadPdfController())->download($records))
             ])->emptyStateHeading('No Met Report found.')->emptyStateDescription('Consider making changes to the filtered date range.');
 
     }
